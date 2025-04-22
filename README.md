@@ -5,7 +5,6 @@ A Go microservice that processes receipt data and calculates reward points based
 ## Description
 
 This application provides a RESTful API for processing receipts and calculating points based on predefined rules. It uses in-memory storage for simplicity, so all data is lost when the service restarts. The application follows idiomatic Go patterns and best practices.
-rm -rf .git
 
 ## Features
 
