@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Receipt Processor API
+  version: 1.0.0
+  description: |
+    API for processing receipts and calculating points.
+servers:
+  - url: http://localhost:8080
+paths:
+  /receipts/process:
+    post:
+      summary: Process a receipt and calculate points
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Receipt'
+      responses:
+        '200':
+          description: Receipt processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+  /receipts/{id}/points:
+    get:
+      summary: Get points for a processed receipt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Points retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsResponse'
+        '404':
+          description: Receipt not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+components:
+  schemas:
+    Receipt:
+      type: object
+      required:
+        - retailer
+        - purchaseDate
+        - purchaseTime
+        - items
+        - total
+      properties:
+        retailer:
+          type: string
+        purchaseDate:
+          type: string
+          format: date
+        purchaseTime:
+          type: string
+          example: '13:01'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        total:
+          type: string
+          example: '35.35'
+    Item:
+      type: object
+      required:
+        - shortDescription
+        - price
+      properties:
+        shortDescription:
+          type: string
+        price:
+          type: string
+          example: '6.49'
+    ReceiptResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    PointsResponse:
+      type: object
+      properties:
+        points:
+          type: integer
+    APIError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
